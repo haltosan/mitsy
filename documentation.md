@@ -3,7 +3,7 @@
 | Syntax | Arguments | Description |
 | ----------- | ----------- | ----------- |
 | print;TYPE;DATA | type:data type, data:data | print the thing |
-| if;CONDITION                            T                           F | condition:true/false, t:run if true, f:false | conditional |
+| if;CONDITION | condition:true/false, | the next line is run on true, the line after for false |
 | goto;LBL | lbl:label |  goto a location |
 | lbl;N | n:label name | a goto location |
 | .M;OFF;M1;OFF2;GOTO | m:location 1, off:offset, m1:location 2, off1:offset 2, goto: goto location (actual location) | insert a line to the table |
