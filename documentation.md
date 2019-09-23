@@ -7,6 +7,14 @@
 | goto;LBL | lbl:label |  goto a location |
 | lbl;N | n:label name | a goto location |
 | .M;OFF;M1;OFF2;GOTO | m:location 1, off:offset, m1:location 2, off1:offset 2, goto: goto location (actual location) | insert a line to the table |
+| var;N;T;V | n:name, t:type, v:value | create a variable and give it a value |
+
+---
+
+Data types:
+ - string
+ - int
+ - float
 
 ## Memory setup
 
