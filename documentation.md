@@ -2,7 +2,11 @@
 
 | Syntax | Arguments | Description |
 | ----------- | ----------- | ----------- |
-| print;TYPE;DATA | type is the data type, data is the data | print the thing |
+| print;TYPE;DATA | type:data type, data:data | print the thing |
+| if;condition;t:f | condition:true/false, t:run if true, f:false | conditional |
+| goto;lbl | lbl:label |  goto a location |
+| lbl;n | n:label name | a goto location |
+| .m;off;m1;off2;goto | m:location 1, off:offset, m1:location 2, off1:offset 2, goto: goto location | insert a line to the table |
 
 ## Memory setup
 
