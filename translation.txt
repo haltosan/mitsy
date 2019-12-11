@@ -1,0 +1,94 @@
+ ;print "XY"
+print;string;X-Y
+> "xy", STRING-PRINT, 0, EBP, 0, 0
+> 0, STRING-PRINT, 0, EBP, 0, 0
+
+ ;if x==y 
+if;x;y
+> 0, CMP, EBP, EBP, X, 0
+> 1, CMP, EBP, EBP, Y, 0
+> 0, EAX, 0, CMP, X, 0
+
+nop;
+> 0, EAX, 0, EAX, 0, 0
+
+lbl;a
+'RUN 1
+generate a hash table with the labels and locations'
+
+goto;a
+'search up in the hash table the label'
+> [LAST INSTRUCTION/NOP], LOCATION
+
+sub;X;Y
+x-y
+'
+> X, TEMPVARS, 0, EBP, 0, 0
+> Y, ECX, 0, EBP, 0, 0
+lbl;x-y
+if;ECX;0
+-goto;x-yT
+-goto;x-yF
+lbl;x-yF
+> 0, TEMPVARS, 0, TEMPVARS, DEC, 0
+> 0, ECX, 0, ECX, DEC, 0
+goto;x-y
+lbl;x-yT
+> 0, EAX, 0, TEMPVARS, 0, 0
+'
+
+add;X;Y
+x+y
+'
+> X, TEMPVARS, 0, EBP, 0, 0
+> Y, ECX, 0, EBP, 0, 0
+lbl;x+y
+if;ECX;0
+-goto;x+yT
+-goto;x+yF
+lbl;x+yF
+> 0, TEMPVARS, 0, TEMPVARS, INC, 0
+> 0, ECX, 0, ECX, DEC, 0
+goto;x+y
+lbl;x+yT
+> 0, EAX, 0, TEMPVARS, 0, 0
+'
+
+var;N;T;V
+variable x int = 1
+' RUN 1
+create hash table with "name" : [type, value]
+place each var into memory
+change references to those vars with memory location
+'
+
++++++++++++++++++++++++++++++++++++++++++
+compiler passes
+
+__1__
+partial expand the following instructions:
+ - sub
+ - add
+
+__2__
+fully expand the following instructions:
+ - print
+ - if
+ - nop
+ - goto
+
+__3__
+look for:
+ - lbl
+ - var
+generate hash tables
+
+__4__
+look for only:
+ - []
+ - goto
+replace with actual locations from hash tables
+
+__2.5__ (future idea)
+optimise by removing nops,
+  appending goto's to previous instr
