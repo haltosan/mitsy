@@ -3,18 +3,37 @@
 | Syntax | Arguments | Description |
 | ----------- | ----------- | ----------- |
 | print;TYPE;DATA | type:data type, data:data | print the thing |
-| if;CONDITION | condition:true/false, | the next line is run on true, the line after for false |
 | goto;LBL | lbl:label |  goto a location |
 | lbl;N | n:label name | a goto location |
-| .M;OFF;M1;OFF2;GOTO | m:location 1, off:offset, m1:location 2, off1:offset 2, goto: goto location (actual location) | insert a line to the table |
+| .;LIT;D;OFF1;S;OFF2;GOTO | lit: literal, d:dest, off1:offset 1, s:source, off2:offset 2, goto: goto location (actual location) | insert a line to the table |
 | var;N;T;V | n:name, t:type, v:value | create a variable and give it a value |
+| sub;L;A | l:location, a:ammount | decrease the location value by ammount |
+| add;L;A | l:location, a:ammount | increase the location value by ammount |
+| if;A;B | a:location a, b:location b | run the next line if a==b, run the line after if a!=b |
+| nop; | - | no operation |
+
 
 ---
 
 Data types:
- - string
- - int
- - float
+
+| type   | maps to | 
+| ----------- | ----------- | 
+| int | 0 | 
+| string | 1 |
+| float | 2 |
+
+
+When using variables, you need to enclose it in brackets
+example:
+`
+print;[x]
+`
+Variable names can't include the following characters:
+ - ;
+ - /
+ - [
+ - ]
 
 ## Memory setup
 
@@ -35,32 +54,54 @@ Memory needs:
  - temp vars
  - permanent vars
  - print space (typed for typed language vms)
- - psuedo registers
+ - registers
+ - imediates
 
 ---
-registers:
+Registers:
 
-eax, ebx, ecx, edx, esi, edi, ebp, esp, eip
-
-21,  22,  23,  24,  25,  26,  27,  28,  29,
+| . | . | . | . | . | . | . | . | . |
+| ----------- | ----------- | ----------- | ----------- | ----------- | ----------- | ----------- | ----------- | ----------- |
+| eax | ebx | ecx | edx | esi | edi | ebp | esp | eip |
+| 21 | 22 | 23 | 24 | 25 | 26 | 27 | 28 | 29 |
  - 21 = return value
- - 22 = temp var
+ - 22 = halt
  - 23 = loop counter
- - 24 = temp var
+ - 24 = temp var/general purpose
  - 25 = goto pointer
  - 26 = pointer
- - 27 = general purpose
+ - 27 = literal loader
  - 28 = stack pointer
  - 29 = instruction pointer
 
 ---
 Mitsy memory setup:
- - 0-10: temp computation/comparison space
+ - 0: holds 0
+ - 1-10: temp computation space
  - 11-20: temp vars
  - 21-29: registers
  - 30-50: permanent vars
- - 51-52: print space
- - 53-63: typed vars (string)
- - 64-65: typed print space (string)
- - 66-76: typed vars (float)
- - 77-78: typed print space (float)
+ - 51: print space
+ - 52-61: string vars
+ - 62: string print space
+ - 63-72: float vars
+ - 73: float print space
+ - 74-328: one byte math table (*filled*)
+ - 329-583: one byte comparison space
+.
+ ---
+ The lines of the bytecode are after this pattern (almost bit bit jump):
+ literal, memory location 1, offset 1, memory location 2, offset 2, goto ;
+ The literal is loaded into the ebp (27).
+ The memory location is a literal integer.
+ The offset is a literal integer.
+ The goto is a location. If it is a zero, it goes to the next instruction.
+ If this where to be rewritten in a higher level language, it would look something like this:
+ ```
+ .
+ while(memory[EBX]==1){
+ memory[EBP] = literal;
+ memory[location1 + offset1] = memory[location2 + offset2];
+ EIP = (GOTO==0? EIP+1 : GOTO);
+ }
+ ```
