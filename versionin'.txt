@@ -1,0 +1,54 @@
+    if("/" in i):
+      reconstruct = ""
+      for cell in i.split(","):
+        cell = cell.replace(">","")
+        c = 0
+        if("/" in cell):
+          f=" "
+          if(c==0):
+            f=">"
+          location = perm_vars[cell.replace("/","").replace(" ","").replace("[","").replace("]","")]
+          cell = f+str(location)
+          c+=1
+        reconstruct+=str(cell).replace(" ",", ")
+      a.write(reconstruct+"\n")
+
+
+    if("[" in i):
+      reconstruct = ""
+      for cell in i.split(","):
+        if("[" in cell):
+          cell = ' '+str(int(cell[2:len(cell)-1])+MAX)
+        reconstruct+=str(cell).replace(' ',", ")
+      a.write(reconstruct+"\n")
+
+
+
+var;x;int;1
+if;/x;1
+print;string;t
+print;string;f
+halt;
+
+++INTO++
+>1, 30, 0, 27, 0, 0
+> 0, 330, 1, 27, 0, 0
+> 1, 330, [30], 27, 0, 0
+> 1, 330, 630, 27, 0, 0
+> 1, 330, 630, 27, 0, 0
+> 0, 21, 0, 330, 1, 0
+>0, 21, 0, 21, 0, 621
+>0, 21, 0, 21, 0, 621
+>0, 21, 0, 21, 0, 1
+>0, 21, 0, 21, 0, 1
+>0, 21, 0, 21, 0, 4
+>0, 21, 0, 21, 0, 4
+>0, 21, 0, 21, 0, 0
+>"t", 62, 0, 27, 0, 0
+>2, 74, 0, 27, 0, 0
+print;string;t
+>0, 21, 0, 21, 0, 0
+>"f", 62, 0, 27, 0, 0
+>2, 74, 0, 27, 0, 0
+print;string;f
+>0, 0, 0, 27, 0, 0
