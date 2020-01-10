@@ -1,13 +1,36 @@
  ;print "XY"
 print;string;X-Y
 > "xy", STRING-PRINT, 0, EBP, 0, 0
-> 0, STRING-PRINT, 0, EBP, 0, 0
+> 2, PRINT_ACTIVATE, 0, EBP, 0, 0
+
 
  ;if x==y 
 if;x;y
 > 0, CMP, EBP, EBP, X, 0
 > 1, CMP, EBP, EBP, Y, 0
 > 0, EAX, 0, CMP, X, 0
+
+if;m;n
+v2
+> 0, CMP, n, EBP, 0, 0
+> 1, CMP, [m], EBP, 0, 0
+> 0, EAX, 0, CMP, n, 0
+goto;[EAX]
+goto;{id}t
+goto;{id}f
+lbl;{id}t
+--next instr--
+lbl;{id}f
+
+    elif(cells[0]=="if"):
+      a.write(">0, "+CMP+", "+EBP+", "+EBP+", "+cells[1]+", 0\n")
+      a.write(">1, "+CMP+", "+EBP+", "+EBP+", "+cells[2]+", 0\n")
+      a.write(">0, "+EAX+", 0, "+CMP+", "+cells[1]+", 0\n")
+
+    elif(cells[0]=="if"):
+      a.write(">0, "+CMP+", "+cells[1]+", "+EBP+", 0, 0\n")
+      a.write(">1, "+CMP+", "+cells[2]+", "+EBP+", 0, 0\n")
+      a.write(">0, "+EAX+", 0, "+CMP+", "+cells[1]+", 0\n")
 
 nop;
 > 0, EAX, 0, EAX, 0, 0
@@ -56,6 +79,8 @@ lbl;x+yT
 
 var;N;T;V
 variable x int = 1
+> V, VARS, count, EBP, 0, 0
+
 ' RUN 1
 create hash table with "name" : [type, value]
 place each var into memory
@@ -86,7 +111,10 @@ generate hash tables
 __4__
 look for only:
  - []
- - goto
+ add 400 to it
+ - :
+replace with actual locations from hash tables
+- /
 replace with actual locations from hash tables
 
 __2.5__ (future idea)
