@@ -79,18 +79,17 @@ Registers:
 ---
 Mitsy memory setup:
  - 0: holds 1 (halt)
- - 1-10: free temp memory
+ - 1-10: temp computation space
  - 11-20: temp vars
  - 21-29: registers
- - 30-50: int vars
- - 51: int print space
+ - 30-50: permanent vars
+ - 51: print space
  - 52-61: string vars
- - 62: string literal loader
- - 63: string print space
- - 64-73: float vars
- - 74: float print space
- - 75-330: one byte math table (*filled*)
- - 331-585: one byte comparison space
+ - 62: string print space
+ - 63-72: float vars
+ - 73: float print space
+ - 74-328: one byte math table (*filled*)
+ - 329-583: one byte comparison space
 .
  ---
  ## Compiler
