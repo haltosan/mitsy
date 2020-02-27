@@ -20,9 +20,13 @@ INC = "77"
 DEC = "76"
 CMP = "331" #585
 MAX = 600
+
+
 perm_vars = {}
 labels = {}
 strings = []
+
+import memEdit
 
 def run0(al):
   a = open("r0",'a')
@@ -108,7 +112,7 @@ def run2(al):
     elif(cells[0]=="dec"):
       a.write(">0, "+cells[1]+", 0, "+DEC+", ["+cells[1]+"], 0\n")
     elif(cells[0]=="inc"):
-      a.write(">0, "+cells[1]+", 0, "+INC+", ["+cells[1]+", 0\n")
+      a.write(">0, "+cells[1]+", 0, "+INC+", ["+cells[1]+"], 0\n")
     else:
       a.write(i+"\n")
   a.close()
@@ -192,19 +196,43 @@ def makeAr(al):
   al = al.replace(">","{")
   al = al.replace("\n","}")
   a.write(al)
+def compile():
+  clear()
 
-clear()
+  run0(makeAl("in.mitc"))
+  run1(makeAl("r0"))
+  run2(makeAl("r1"))
+  run3(makeAl("r2"))
+  run4(makeAl("r3"))
 
-run0(makeAl("in.mitc"))
+  print("var",perm_vars)
+  print("lbl",labels)
+  print("strings",strings)
 
-run1(makeAl("r0"))
+howdy = '''
 
-run2(makeAl("r1"))
+.88b  d88. d888888b d888888b .d8888. db    db
+88'YbdP`88   `88'   `~~88~~' 88'  YP `8b  d8'
+88  88  88    88       88    `8bo.    `8bd8' 
+88  88  88    88       88      `Y8b.    88   
+88  88  88   .88.      88    db   8D    88   
+YP  YP  YP Y888888P    YP    `8888Y'    YP   
 
-run3(makeAl("r2"))
+'''
 
-run4(makeAl("r3"))
+def run():
+  print(howdy)
+  while(True):
+    print("What do you want to do?")
+    print("1) Compile a program\n2) Edit memory")
+    print("99) Exit")
+    choice = input("> ")
+    if(choice == "1"):
+      compile()
+    elif(choice == "2"):
+      memEdit.run()
+    elif(choice == "99"):
+      break
+  print("Have fun")
 
-print("var",perm_vars)
-print("lbl",labels)
-print("strings",strings)
+run()
