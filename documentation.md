@@ -2,16 +2,18 @@
 
 | Syntax | Arguments | Description |
 | ----------- | ----------- | ----------- |
-| print;TYPE;DATA | type:data type, data:data | print the thing |
+| print;TYPE;DATA | type:data type, data:data | print  |
 | pvar;T;V | t:type, v:variable name | print the variable |
 | goto;:LBL | lbl:label |  goto a label (include :) |
 | lbl;N | n:label name | a goto location |
-| >LIT, D, OFF1, S, OFF2, GOTO | lit: literal, d:dest, off1:offset 1, s:source, off2:offset 2, goto: goto location (actual location) | insert a line to the table |
+| >LIT, D, OFF1, S, OFF2, GOTO | lit: literal, d:dest, off1:offset 1, s:source, off2:offset 2, goto: goto location (relative location) | insert a line to the table |
 | var;N;T;V | n:name, t:type, v:value | create a variable and give it a value |
 | sub;L;A | l:location, a:ammount | decrease the location value by ammount |
 | add;L;A | l:location, a:ammount | increase the location value by ammount |
-| if;A;B | a:location a, b:location b | a==b; runs the next line if true, the line after if false |
+| if;A;B | a:location a, b:location b | a==b; stepover next line on true |
 | nop; | - | no operation |
+| push;L | l:location | push a value from memory onto the stack |
+| pop; | - | pop the value from the top of the stack to eax |
 
 
 ---
@@ -73,8 +75,11 @@ Registers:
  - 25 = goto pointer
  - 26 = pointer
  - 27 = literal loader
- - 28 = stack pointer
+ - 28 = stack pointer (*set to offset*)
  - 29 = instruction pointer
+
+
+ Registers can be used at any time. Just type the all caps name (`add;EAX;1` for example)
 
 ---
 Mitsy memory setup:
@@ -90,9 +95,10 @@ Mitsy memory setup:
  - 73: float print space
  - 74-328: one byte math table (*filled*)
  - 329-583: one byte comparison space
+ - 584-624: stack
 .
  ---
- ## Compiler
+ ## Virtual Machine
  The lines of the bytecode are after this pattern (almost bit bit jump):
  literal, memory location 1, offset 1, memory location 2, offset 2, goto ;
  The literal is loaded into the ebp (27).
