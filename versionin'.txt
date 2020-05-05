@@ -52,3 +52,48 @@ print;string;t
 >2, 74, 0, 27, 0, 0
 print;string;f
 >0, 0, 0, 27, 0, 0
+
+old if
+      a.write("goto;:"+str(ids)+"t\n") #true
+      a.write("goto;:"+str(ids)+"f\n") #false
+      a.write("lbl;"+str(ids)+"t\n") #true action
+    elif(fi)
+      a.write("lbl;"+str(ids)+"f\n")
+      fi=False
+
+old add (w/ old if)
+      x = str(lin[1])
+      y = str(lin[2])
+      a.write(">"+x+", "+TEMP_VARS+", 0, "+EBP+", 0, 0\n")
+      a.write(">"+y+", "+ECX+", 0, "+EBP+", 0, 0\n")
+      a.write("lbl;"+x+"+"+y+"\n")
+      a.write("if;"+ECX+";0\n")
+      a.write("goto;:"+x+"+"+y+"T\n")
+      a.write("goto;:"+x+"+"+y+"F\n")
+      a.write("lbl;"+x+"+"+y+"F\n")
+      a.write(">0, "+TEMP_VARS+", 0, "+TEMP_VARS+", "+INC+", 0\n")
+      a.write(">0, "+ECX+", 0, "+ECX+", "+DEC+", 0\n")
+      a.write("goto;:"+x+"+"+y+"\n")
+      a.write("lbl;"+x+"+"+y+"T\n")
+      a.write(">0, "+EAX+", 0, "+TEMP_VARS+", 0, 0\n")
+old sub (w/ old if)
+      lin = i.split(";")
+      x = str(lin[1])
+      y = str(lin[2])
+      a.write(">"+x+", "+TEMP_VARS+", 0, "+EBP+", 0, 0\n")
+      a.write(">"+y+", "+ECX+", 0, "+EBP+", 0, 0\n")
+      a.write("lbl;"+x+"+"+y+"\n")
+      a.write("if;"+ECX+";0\n")
+      a.write("goto;"+x+"-"+y+"T\n")
+      a.write("goto;"+x+"-"+y+"F\n")
+      a.write("lbl;"+x+"-"+y+"F\n")
+      a.write(">0, "+TEMP_VARS+", 0, "+TEMP_VARS+", "+DEC+", 0\n")
+      a.write(">0, "+ECX+", 0, "+ECX+", "+DEC+", 0\n")
+      a.write("goto;"+x+"-"+y+"\n")
+      a.write("lbl;"+x+"-"+y+"T\n")
+      a.write(">0, "+EAX+", 0, "+TEMP_VARS+", 0, 0\n")
+
+old reg
+  if(i in ["eax","ebx","ecx","edx","esi","edi","ebp","esp","eip"]):
+        for cell in i.replace("/","").replace(" ","").replace("[","").replace("]","").replace(">","").split(", "):
+          i.replace(cell, eval(cell))
