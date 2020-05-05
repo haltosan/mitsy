@@ -80,12 +80,24 @@ lbl;x+yT
 var;N;T;V
 variable x int = 1
 > V, VARS, count, EBP, 0, 0
-
 ' RUN 1
 create hash table with "name" : [type, value]
 place each var into memory
 change references to those vars with memory location
 '
+
+push;X
+'
+mov;[esp];X
+inc;esp
+'
+
+pop;
+'
+mov;eax;STACK+[esp]
+dec;esp
+'
+
 
 +++++++++++++++++++++++++++++++++++++++++
 compiler passes
@@ -101,6 +113,8 @@ fully expand the following instructions:
  - if
  - nop
  - goto
+ - push
+ - pop
 
 __3__
 look for:
@@ -120,3 +134,5 @@ replace with actual locations from hash tables
 __2.5__ (future idea)
 optimise by removing nops,
   appending goto's to previous instr
+
++++++++++++++++++++++++++++++++++++++++++
