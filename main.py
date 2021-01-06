@@ -23,12 +23,44 @@ CMP = "331" #585
 STACK = "586" #624
 MAX = 625
 
+'''
+TODO: get call & return instruction working
+TODO: change to absolute goto for return instruction (or do some magic to get it to work), see future
+
+these are cool
+https://www.researchgate.net/figure/Venn-Diagram-of-Complexity-Classes-in-Currently-Believed-Structure_fig10_51932027
+
+https://enacademic.com/dic.nsf/enwiki/4317
+'''
 
 perm_vars = {}
 labels = {}
 strings = []
 
 import memEdit
+
+def runN1(al):
+  nonce = 0
+  a = open("rN1",'a')
+  for i in al.split("\n"):
+    cells = i.split(";")
+    if(cells[0]=="mult"):
+      location = cells[1]
+      amount = cells[2]
+      a.write(">"+amount+", 2, 0, EBP, 0, 0\n")
+      a.write(">0, 3, 0, EBP, 0, 0\n")
+      a.write(">0, 4, 0, "+location+", 0, 0\n")
+      a.write("lbl;*"+str(nonce)+"Start\n")
+      a.write("if;2;0\n")
+      a.write("goto;:*"+str(nonce)+"End\n")
+      a.write("add;"+location+";4\n")
+      a.write("dec;2\n")
+      a.write("goto;:*"+str(nonce)+"Start\n")
+      a.write("lbl;*"+str(nonce)+"End\n")
+      nonce += 1
+    else:
+      a.write(i+"\n")
+
 
 def run0(al):
   nonce = 0
@@ -39,14 +71,14 @@ def run0(al):
       lin = i.split(";")
       location = str(lin[1])
       amount = str(lin[2])
-      a.write(">"+amount+", "+ECX+", 0, "+EBP+", 0, 0\n")
+      a.write(">"+amount+", 1, 0, "+EBP+", 0, 0\n")
       a.write("lbl;+"+str(nonce)+"Start\n")
       a.write(">0, "+TEMP_VARS+", 0, "+EBP+", 0, 0\n")
-      a.write("if;"+ECX+";"+TEMP_VARS+"\n")
+      a.write("if;1;"+TEMP_VARS+"\n")
       a.write("goto;:+"+str(nonce)+"Mid\n")
       a.write("goto;:+"+str(nonce)+"End\n")
       a.write("lbl;+"+str(nonce)+"Mid\n")
-      a.write(">0, "+ECX+", 0, "+DEC+", ["+ECX+"], 0\n")#dec ecx
+      a.write(">0, 1, 0, "+DEC+", [1], 0\n")#dec ecx
       a.write(">0, "+location+", 0, "+INC+", ["+location+"], 0\n")#inc location
       a.write("goto;:+"+str(nonce)+"Start\n")
       a.write("lbl;+"+str(nonce)+"End\n")
@@ -56,14 +88,14 @@ def run0(al):
       lin = i.split(";")
       location = str(lin[1])
       amount = str(lin[2])
-      a.write(">"+amount+", "+ECX+", 0, "+EBP+", 0, 0\n")
+      a.write(">"+amount+", 1, 0, "+EBP+", 0, 0\n")
       a.write("lbl;+"+str(nonce)+"Start\n")
       a.write(">0, "+TEMP_VARS+", 0, "+EBP+", 0, 0\n")
-      a.write("if;"+ECX+";"+TEMP_VARS+"\n")
+      a.write("if;1;"+TEMP_VARS+"\n")
       a.write("goto;:+"+str(nonce)+"Mid\n")
       a.write("goto;:+"+str(nonce)+"End\n")
       a.write("lbl;+"+str(nonce)+"Mid\n")
-      a.write(">0, "+ECX+", 0, "+DEC+", ["+ECX+"], 0\n")#dec ecx
+      a.write(">0, 1, 0, "+DEC+", [1], 0\n")#dec ecx
       a.write(">0, "+location+", 0, "+DEC+", ["+location+"], 0\n")#dec location
       a.write("goto;:+"+str(nonce)+"Start\n")
       a.write("lbl;+"+str(nonce)+"End\n")
@@ -76,7 +108,6 @@ def run1(al):
   global labels
   a = open("r1","a")
   ids = 0
-  fi = False
   for i in al.split("\n"):
     cells = i.split(";")
     if(cells[0]=="if"):
@@ -85,7 +116,12 @@ def run1(al):
       a.write(">1, "+CMP+", ["+cells[1]+"], "+EBP+", 0, 0\n") #w/ loc 2
       a.write(">0, "+EAX+", 0, "+CMP+", ["+cells[2]+"], 0\n") #return to eax
       a.write("goto;["+EAX+"]\n") #decider
-      fi = True
+    elif(cells[0]=="call"):
+      a.write("push;EIP\n")
+      a.write("goto;:"+cells[1]+"\n")
+    elif(cells[0]=="return"):
+      a.write("pop;\n")
+      a.write(">0, EIP, 0, EAX, 0, 0\n")
     else:
       a.write(i+"\n")
 
@@ -109,7 +145,7 @@ def run2(al):
     elif(cells[0]=="dec"):
       a.write(">0, "+cells[1]+", 0, "+DEC+", ["+cells[1]+"], 0\n")
     elif(cells[0]=="inc"):
-      a.write(">0, "+cells[1]+", 0, "+INC+", ["+cells[1]+"], 0\n")
+      a.write(">0, "+cells[1]+", 0, "+INC+", ["+cells[1]+"], 0\n")      
     elif(cells[0]=="push"):
       a.write(">"+cells[1]+", "+STACK+", ["+ESP+"], "+EBP+", 0, 0\n")#put in on the stack
       a.write(">0, "+ESP+", 0, "+INC+", ["+ESP+"], 0\n")#inc stack pointer
@@ -183,11 +219,11 @@ def run4(al):
             cell = cell.replace("/","").replace(" ","").replace("[","").replace("]","").replace(">","").replace('"',"")
             strings.append(cell)
             i = i.replace('"'+cell+'"',str(strings.index(cell)-MAX))
-            #TODO: finish replacing strings; I/O isn't that big of a deal rn
+            #TO-DO: finish replacing strings; I/O isn't that big of a deal rn
       a.write(i+"\n")
 
 def clear():
-  files = ["out.bc","r0","r1","r2","r3"]
+  files = ["out.bc","rN1","r0","r1","r2","r3"]
   for i in files:
     a = open(i,"w")
     a.write("")
@@ -208,8 +244,9 @@ def makeAr(al): #make array from file
 
 def compile():
   clear()
-
-  run0(makeAl("in.mitc"))
+  
+  runN1(makeAl("in.mitc"))
+  run0(makeAl("rN1"))
   run1(makeAl("r0"))
   run2(makeAl("r1"))
   run3(makeAl("r2"))
