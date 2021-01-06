@@ -43,35 +43,37 @@ goto;a
 'search up in the hash table the label'
 > [LAST INSTRUCTION/NOP], LOCATION
 
+[corrupts 1]
 sub;X;Y
 x-y
 '
 > X, TEMPVARS, 0, EBP, 0, 0
-> Y, ECX, 0, EBP, 0, 0
+> Y, 1, 0, EBP, 0, 0        ;loop counter
 lbl;x-y
-if;ECX;0
+if;1;0
 -goto;x-yT
 -goto;x-yF
 lbl;x-yF
 > 0, TEMPVARS, 0, TEMPVARS, DEC, 0
-> 0, ECX, 0, ECX, DEC, 0
+> 0, 1, 0, 1, DEC, 0
 goto;x-y
 lbl;x-yT
 > 0, EAX, 0, TEMPVARS, 0, 0
 '
 
+[corrupts 1]
 add;X;Y
 x+y
 '
 > X, TEMPVARS, 0, EBP, 0, 0
-> Y, ECX, 0, EBP, 0, 0
+> Y, 1, 0, EBP, 0, 0
 lbl;x+y
-if;ECX;0
+if;1;0
 -goto;x+yT
 -goto;x+yF
 lbl;x+yF
 > 0, TEMPVARS, 0, TEMPVARS, INC, 0
-> 0, ECX, 0, ECX, DEC, 0
+> 0, 1, 0, 1, DEC, 0
 goto;x+y
 lbl;x+yT
 > 0, EAX, 0, TEMPVARS, 0, 0
@@ -98,14 +100,49 @@ mov;eax;STACK+[esp]
 dec;esp
 '
 
+call;LBL
+'
+push;EIP
+goto;:LBL
+'
+
+return;
+'
+pop;
+goto;[EAX]
+'
+
+[corrupts 1(add), 2, 3, 4]
+mult;l;a
+'
+>A, 2, 0, EBP, 0, 0 ;init loop counter
+>0, 3, 0, EBP, 0, 0 ;get 0 for comparison
+>0, 4, 0, L, 0, 0   ;backup location
+lbl;:start
+if;2;3              ;cmp loop counter and 0 (at 3)
+goto;:end
+add;L;4             ;add to self from backup (at 4)
+dec;2               ;dec loop counter
+goto;:start
+lbl;:end
+'
 
 +++++++++++++++++++++++++++++++++++++++++
 compiler passes
 
+__-1__
+ - mult
+
+__0__
+partial expand
+ - add
+ - sub
+
 __1__
 partial expand the following instructions:
- - sub
- - add
+ - if
+ - call
+ - return
 
 __2__
 fully expand the following instructions:
