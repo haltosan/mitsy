@@ -2,18 +2,23 @@
 
 | Syntax | Arguments | Description |
 | ----------- | ----------- | ----------- |
-| print;TYPE;DATA | type:data type, data:data | print  |
+| print;T;D | t:type, d:data | print  |
 | pvar;T;V | t:type, v:variable name | print the variable |
-| goto;:LBL | lbl:label |  goto a label (include :) |
+| goto;:L | l:label |  goto a label (include :) |
 | lbl;N | n:label name | a goto location |
 | >LIT, D, OFF1, S, OFF2, GOTO | lit: literal, d:dest, off1:offset 1, s:source, off2:offset 2, goto: goto location (relative location) | insert a line to the table |
 | var;N;T;V | n:name, t:type, v:value | create a variable and give it a value |
-| sub;L;A | l:location, a:ammount | decrease the location value by ammount |
-| add;L;A | l:location, a:ammount | increase the location value by ammount |
+| mult;L;A | l:location, a:amount | multiply the location value by amount | 
+| sub;L;A | l:location, a:amount | decrease the location value by amount |
+| add;L;A | l:location, a:amount | increase the location value by amount |
+| inc;L | l:location | increment the value at location |
+| dec;L | l:location | decrement the value at location |
 | if;A;B | a:location a, b:location b | a==b; stepover next line on true |
 | nop; | - | no operation |
 | push;L | l:location | push a value from memory onto the stack |
 | pop; | - | pop the value from the top of the stack to eax |
+| call;:LBL | lbl:label | call the function at :LBL |
+| return; | - | return from a function call |
 
 
 ---
