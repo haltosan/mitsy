@@ -1,0 +1,16 @@
+change to absolute goto:
+  with relative, it makes compiling easy
+  can't return from functions; goto/push;[EIP] is used to return, but this moved far out of instruction range
+  +possible other solutions:
+   - edit EIP  :  goto argument is processed after the others
+   - have override for EIP to remedy the 1st proposed issue  :  adds unnessisary complexity to the pure mov idea
+   - translate absolute EIP to reletive location
+     <>someVar=0 goto;[someVar] calculateRelative->someVar goto-1st-goto
+
+get multiplication, modulo, exponents
+package a nice alu (with functions for add, sub, etc)
+
+
+mitsy 2.0
+  remove goto, just modify EIP
+  compiler optimization (use alu or repeat functions) + research
